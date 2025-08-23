@@ -142,6 +142,7 @@ wathiq_app/
 │   └── widgets/
 │       ├── stat_card.dart        # Reusable widget for displaying statistics
 │       └── how_it_works_card.dart # Reusable widget for displaying how-it-works steps
+```
 
 ## Technologies Used
 
