@@ -1,6 +1,8 @@
 # Wathiq - Trust-Based P2P Lending Platform
 
-![Wathiq Logo](assets/images/wathiq_logo.png)
+<p align="center">
+  ![Wathiq Logo](assets/images/wathiq_logo.png)
+</p>
 
 Wathiq is a Flutter-based mobile application designed to facilitate trust-based lending within communities, adhering to Islamic finance principles such as Qard Hasan (interest-free loans) and Kafala (guarantee).
 
