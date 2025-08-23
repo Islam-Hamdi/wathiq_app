@@ -1,4 +1,4 @@
-# Wathiq - Trust-Based Lending Platform
+# Wathiq - Trust-Based P2P Lending Platform
 
 ![Wathiq Logo](assets/images/wathiq_logo.png)
 
