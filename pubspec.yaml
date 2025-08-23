@@ -56,10 +56,10 @@ flutter:
   fonts:
     - family: SFPro
       fonts:
-        - asset: assets/fonts/SFPro-Display-Regular.ttf
-        - asset: assets/fonts/SFPro-Display-Medium.ttf
+        - asset: assets/fonts/SF-Pro-Display-Regular.otf
+        - asset: assets/fonts/SF-Pro-Display-Medium.otf
           weight: 500
-        - asset: assets/fonts/SFPro-Display-Semibold.ttf
+        - asset: assets/fonts/SF-Pro-Display-Semibold.otf
           weight: 600
-        - asset: assets/fonts/SFPro-Display-Bold.ttf
+        - asset: assets/fonts/SF-Pro-Display-Bold.otf
           weight: 700

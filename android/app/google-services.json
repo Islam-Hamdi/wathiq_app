@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "184402284558",
+    "project_id": "wathiq-qa",
+    "storage_bucket": "wathiq-qa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:184402284558:android:66fd82be15dd6c16ecac5f",
+        "android_client_info": {
+          "package_name": "com.wathiq.app.wathiq"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBkv76hvh6q1WFoFq_BB50CACVbBBRXpg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
