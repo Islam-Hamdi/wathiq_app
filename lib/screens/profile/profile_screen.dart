@@ -28,7 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final userService = UserService.instance;
 
     if (authService.currentUser != null) {
-      final user = await userService.getUserOnce(authService.currentUser!.uid);
+      final user = await userService.getUserById(authService.currentUser!.uid);
       final stats = await userService.getUserStats(authService.currentUser!.uid);
       setState(() {
         _currentUser = user;
@@ -141,7 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   
                   // Name and Username
                   Text(
-                    _currentUser!.fullName,
+                    _currentUser!.name,
                     style: AppTheme.h2,
                   ),
                   const SizedBox(height: 4),
@@ -238,7 +238,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Expanded(
                   child: _StatCard(
                     title: 'Circles Joined',
-                    value: _currentUser!.circlesJoined.toString(),
+                    value: _currentUser!.circleIds.length
+                        .toString(), // <-- convert to String
                     icon: Icons.groups,
                     color: AppTheme.successGreen,
                   ),
@@ -266,7 +267,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             _InfoCard(
               icon: Icons.phone_outlined,
               title: 'Phone',
-              value: _currentUser!.phoneNumber ?? 'N/A',
+              value: _currentUser!.phone ?? 'N/A',
               onTap: () {
                 // TODO: Edit phone
               },

@@ -12,7 +12,7 @@ class CircleService {
     try {
       await _circlesCollection.doc(circle.id).set(circle.toMap());
       // Update creator's circlesJoined count
-      await _usersCollection.doc(circle.creatorId).update({
+      await _usersCollection.doc(circle.ownerId).update({
         'circlesJoined': FieldValue.increment(1),
       });
     } catch (e) {
@@ -55,12 +55,12 @@ class CircleService {
 
         CircleModel circle = CircleModel.fromMap(circleSnapshot.data() as Map<String, dynamic>);
 
-        if (circle.members.contains(userId)) {
+        if (circle.memberIds.contains(userId)) {
           throw Exception('User is already a member of this circle');
         }
 
         // Add user to members list
-        circle = circle.copyWith(members: [...circle.members, userId]);
+        circle = circle.copyWith(memberIds: [...circle.memberIds, userId]);
         transaction.update(circleRef, {'members': FieldValue.arrayUnion([userId])});
 
         // Update user's circlesJoined count
@@ -87,12 +87,13 @@ class CircleService {
 
         CircleModel circle = CircleModel.fromMap(circleSnapshot.data() as Map<String, dynamic>);
 
-        if (!circle.members.contains(userId)) {
+        if (!circle.memberIds.contains(userId)) {
           throw Exception('User is not a member of this circle');
         }
 
         // Remove user from members list
-        circle = circle.copyWith(members: circle.members.where((id) => id != userId).toList());
+        circle = circle.copyWith(
+            memberIds: circle.memberIds.where((id) => id != userId).toList());
         transaction.update(circleRef, {'members': FieldValue.arrayRemove([userId])});
 
         // Update user's circlesJoined count

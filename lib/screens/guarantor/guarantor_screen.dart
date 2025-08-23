@@ -7,6 +7,7 @@ import '../../services/user_service.dart';
 import '../../models/guarantor_model.dart';
 import '../../models/loan_model.dart';
 import '../../services/loan_service.dart';
+import '../../models/user_model.dart';
 
 class GuarantorScreen extends StatefulWidget {
   const GuarantorScreen({super.key});
@@ -72,7 +73,7 @@ class _GuarantorScreenState extends State<GuarantorScreen> {
               style: AppTheme.h2,
             ),
             const SizedBox(height: 16),
-            StreamBuilder<List<GuarantorRequest>>(
+            StreamBuilder<List<GuarantorRequestModel>>(
               stream: guarantorService.getUserGuarantorRequestsStream(currentUserId),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -125,7 +126,7 @@ class _GuarantorScreenState extends State<GuarantorScreen> {
               style: AppTheme.h2,
             ),
             const SizedBox(height: 16),
-            StreamBuilder<List<GuarantorRequest>>(
+            StreamBuilder<List<GuarantorRequestModel>>(
               stream: guarantorService.getUserGuarantorRequestsStream(currentUserId),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -174,7 +175,7 @@ class _GuarantorScreenState extends State<GuarantorScreen> {
 }
 
 class _GuarantorRequestCard extends StatelessWidget {
-  final GuarantorRequest request;
+  final GuarantorRequestModel request;
   final LoanModel loan;
   final VoidCallback onConfirm;
   final VoidCallback onDecline;
@@ -230,7 +231,7 @@ class _GuarantorRequestCard extends StatelessWidget {
                         style: AppTheme.title,
                       ),
                       Text(
-                        '@${loan.borrowerUsername} • ${_timeAgo(request.requestedAt)}',
+                        '@${loan.borrowerUsername} • ${_timeAgo(request.createdAt)}',
                         style: AppTheme.caption,
                       ),
                     ],
@@ -315,7 +316,7 @@ class _GuarantorRequestCard extends StatelessWidget {
                 spacing: 8,
                 children: loan.guarantorIds.map((guarantorId) {
                   return FutureBuilder<UserModel?>(
-                    future: UserService.instance.getUserOnce(guarantorId),
+                    future: UserService.instance.getUserById(guarantorId),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const SizedBox.shrink();
@@ -381,7 +382,7 @@ class _GuarantorRequestCard extends StatelessWidget {
 }
 
 class _ConfirmedGuaranteeCard extends StatelessWidget {
-  final GuarantorRequest request;
+  final GuarantorRequestModel request;
   final LoanModel loan;
 
   const _ConfirmedGuaranteeCard({
@@ -436,7 +437,7 @@ class _ConfirmedGuaranteeCard extends StatelessWidget {
                         style: AppTheme.title,
                       ),
                       Text(
-                        '@${loan.borrowerUsername} • Confirmed ${_timeAgo(request.updatedAt ?? request.requestedAt)}',
+                        '@${loan.borrowerUsername} • Confirmed ${_timeAgo(request.respondedAt ?? request.createdAt)}',
                         style: AppTheme.caption,
                       ),
                     ],

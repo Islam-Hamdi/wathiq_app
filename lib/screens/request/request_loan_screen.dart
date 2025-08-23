@@ -5,7 +5,8 @@ import '../../services/loan_service.dart';
 import '../../services/auth_service.dart';
 import '../../services/user_service.dart';
 import '../../models/loan_model.dart';
-import '../../models/user_model.dart';
+import '../../services/firebase_service.dart';
+
 
 class RequestLoanScreen extends StatefulWidget {
   const RequestLoanScreen({super.key});
@@ -110,7 +111,7 @@ class _RequestLoanScreenState extends State<RequestLoanScreen> {
         return;
       }
 
-      final borrower = await userService.getUserOnce(currentUser.uid);
+      final borrower = await userService.getUserById(currentUser.uid);
       if (borrower == null) {
         _showSnackBar('Borrower data not found', Colors.red);
         return;
@@ -134,10 +135,11 @@ class _RequestLoanScreenState extends State<RequestLoanScreen> {
         borrowerUsername: borrower.username,
         amount: double.parse(_amountController.text),
         currency: _selectedCurrency,
+        category: 'personal',
         reason: _reasonController.text.trim(),
         status: 'pending', // Initial status
         guarantorIds: guarantorIds,
-        requestedAt: DateTime.now(),
+        createdAt: DateTime.now(),
         dueDate: _dueDate,
       );
 

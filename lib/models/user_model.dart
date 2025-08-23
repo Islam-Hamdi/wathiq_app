@@ -9,6 +9,8 @@ class UserModel {
   final String kycStatus; // 'not_started', 'in_progress', 'verified'
   final DateTime createdAt;
   final DateTime updatedAt;
+  final List<String> circleIds; // list of circles the user joined
+  final String? location;
 
   UserModel({
     required this.id,
@@ -21,6 +23,8 @@ class UserModel {
     this.kycStatus = 'not_started',
     required this.createdAt,
     required this.updatedAt,
+    this.circleIds = const [], // default empty list
+    this.location,
   });
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
@@ -35,6 +39,8 @@ class UserModel {
       kycStatus: map['kycStatus'] ?? 'not_started',
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] ?? 0),
       updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] ?? 0),
+      circleIds: List<String>.from(map['circleIds'] ?? []),
+      location: map['location'],
     );
   }
 
@@ -50,6 +56,8 @@ class UserModel {
       'kycStatus': kycStatus,
       'createdAt': createdAt.millisecondsSinceEpoch,
       'updatedAt': updatedAt.millisecondsSinceEpoch,
+      'circleIds': circleIds,
+      'location': location,
     };
   }
 
@@ -64,6 +72,9 @@ class UserModel {
     String? kycStatus,
     DateTime? createdAt,
     DateTime? updatedAt,
+    List<String>? circleIds,
+    String? location,
+
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -76,6 +87,8 @@ class UserModel {
       kycStatus: kycStatus ?? this.kycStatus,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      circleIds: circleIds ?? this.circleIds,
+      location: location ?? this.location,
     );
   }
 }

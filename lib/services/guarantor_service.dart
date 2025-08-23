@@ -7,7 +7,7 @@ class GuarantorService {
   final CollectionReference _guarantorRequestsCollection = FirebaseService.instance.guarantorRequestsCollection;
 
   // Create a new guarantor request
-  Future<void> createGuarantorRequest(GuarantorRequest request) async {
+  Future<void> createGuarantorRequest(GuarantorRequestModel request) async {
     try {
       await _guarantorRequestsCollection.doc(request.id).set(request.toMap());
     } catch (e) {
@@ -17,10 +17,11 @@ class GuarantorService {
   }
 
   // Get a guarantor request by ID
-  Stream<GuarantorRequest?> getGuarantorRequestStream(String requestId) {
+  Stream<GuarantorRequestModel?> getGuarantorRequestStream(String requestId) {
     return _guarantorRequestsCollection.doc(requestId).snapshots().map((snapshot) {
       if (snapshot.exists) {
-        return GuarantorRequest.fromMap(snapshot.data() as Map<String, dynamic>);
+        return GuarantorRequestModel.fromMap(
+            snapshot.data() as Map<String, dynamic>);
       } else {
         return null;
       }
@@ -28,12 +29,14 @@ class GuarantorService {
   }
 
   // Get all guarantor requests for a specific user (as a guarantor)
-  Stream<List<GuarantorRequest>> getUserGuarantorRequestsStream(String guarantorId) {
+  Stream<List<GuarantorRequestModel>> getUserGuarantorRequestsStream(
+      String guarantorId) {
     return _guarantorRequestsCollection
         .where('guarantorId', isEqualTo: guarantorId)
         .snapshots()
         .map((snapshot) => snapshot.docs
-            .map((doc) => GuarantorRequest.fromMap(doc.data() as Map<String, dynamic>))
+            .map((doc) => GuarantorRequestModel.fromMap(
+                doc.data() as Map<String, dynamic>))
             .toList());
   }
 

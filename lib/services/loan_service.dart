@@ -132,5 +132,28 @@ class LoanService {
       throw Exception('Failed to decline loan: $e');
     }
   }
+
+  //show global loan stats
+  Stream<Map<String, dynamic>> getGlobalLoanStatsStream() {
+    return _loansCollection.snapshots().map((snapshot) {
+      double totalAmount = 0.0;
+      int fundedCount = 0;
+      int pendingCount = 0;
+
+      for (var doc in snapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        totalAmount += (data['amount'] ?? 0.0).toDouble();
+        if (data['status'] == 'funded') fundedCount++;
+        if (data['status'] == 'pending') pendingCount++;
+      }
+
+      return {
+        'totalAmount': totalAmount,
+        'fundedCount': fundedCount,
+        'pendingCount': pendingCount,
+      };
+    });
+  }
+
 }
 

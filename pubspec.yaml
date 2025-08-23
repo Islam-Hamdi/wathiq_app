@@ -29,6 +29,7 @@ dependencies:
   uuid: ^4.2.1
   
   cupertino_icons: ^1.0.2
+  rxdart: ^0.28.0
 
 dev_dependencies:
   flutter_test:
@@ -50,14 +51,15 @@ flutter:
   
   assets:
     - assets/images/
+    - assets/fonts/
   
   fonts:
     - family: SFPro
       fonts:
-        - asset: assets/fonts/SFPro-Regular.ttf
-        - asset: assets/fonts/SFPro-Medium.ttf
+        - asset: assets/fonts/SFPro-Display-Regular.ttf
+        - asset: assets/fonts/SFPro-Display-Medium.ttf
           weight: 500
-        - asset: assets/fonts/SFPro-Semibold.ttf
+        - asset: assets/fonts/SFPro-Display-Semibold.ttf
           weight: 600
-        - asset: assets/fonts/SFPro-Bold.ttf
+        - asset: assets/fonts/SFPro-Display-Bold.ttf
           weight: 700

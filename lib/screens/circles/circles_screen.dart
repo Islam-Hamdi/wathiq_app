@@ -67,10 +67,12 @@ class _CirclesScreenState extends State<CirclesScreen>
         id: FirebaseService.instance.generateId(),
         name: _circleNameController.text.trim(),
         description: _circleDescriptionController.text.trim(),
-        creatorId: authService.currentUser!.uid,
-        members: [authService.currentUser!.uid], // Creator is automatically a member
+        ownerId: authService.currentUser!.uid, // ✅ correct field
+        memberIds: [authService.currentUser!.uid], // ✅ use memberIds
         createdAt: DateTime.now(),
       );
+
+
 
       await circleService.createCircle(newCircle);
       _showSnackBar('Circle created successfully!', AppTheme.successGreen);
@@ -205,7 +207,7 @@ class _CirclesScreenState extends State<CirclesScreen>
                 itemCount: circles.length,
                 itemBuilder: (context, index) {
                   final circle = circles[index];
-                  final isCreator = circle.creatorId == currentUserId;
+                  final isCreator = circle.ownerId == currentUserId;
 
                   return _CircleCard(
                     circle: circle,
@@ -219,6 +221,8 @@ class _CirclesScreenState extends State<CirclesScreen>
                             ? _leaveCircle(circle.id) 
                             : _joinCircle(circle.id),
                     currentUserId: currentUserId,
+                    isLoading: _isLoading, // ← pass the parent's _isLoading
+
                   );
                 },
               );
@@ -267,8 +271,9 @@ class _CirclesScreenState extends State<CirclesScreen>
                       itemCount: circles.length,
                       itemBuilder: (context, index) {
                         final circle = circles[index];
-                        final isMember = circle.members.contains(currentUserId);
-                        final isCreator = circle.creatorId == currentUserId;
+                        final isMember = currentUserId != null &&
+                            circle.isMember(currentUserId);
+                        final isCreator = circle.ownerId == currentUserId;
 
                         return _CircleCard(
                           circle: circle,
@@ -307,6 +312,7 @@ class _CircleCard extends StatelessWidget {
   final VoidCallback onTap;
   final Function(bool isMember)? onJoinLeave;
   final String? currentUserId;
+  final bool isLoading; // ← add this
 
   const _CircleCard({
     required this.circle,
@@ -314,11 +320,13 @@ class _CircleCard extends StatelessWidget {
     required this.onTap,
     this.onJoinLeave,
     this.currentUserId,
+    this.isLoading = false, // default to false
+
   });
 
   @override
   Widget build(BuildContext context) {
-    final isMember = circle.members.contains(currentUserId);
+    final isMember = circle.isMember(currentUserId!);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -409,7 +417,8 @@ class _CircleCard extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                circle.description,
+                circle.description ??
+                    'Uh Oh, No description to show', // fallback to empty string
                 style: AppTheme.body,
               ),
               const SizedBox(height: 8),
@@ -417,7 +426,7 @@ class _CircleCard extends StatelessWidget {
                 children: [
                   _StatChip(
                     icon: Icons.people,
-                    label: '${circle.members.length} Members',
+                    label: '${circle.memberCount} Members',
                   ),
                   const SizedBox(width: 8),
                   _StatChip(
@@ -427,7 +436,8 @@ class _CircleCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   _StatChip(
                     icon: Icons.trending_up,
-                    label: '${circle.successRate.toInt()}% Success', // Placeholder
+                    label:
+                        '${circle.trustScore.toInt()}% Success', // Placeholder
                   ),
                 ],
               ),
@@ -437,12 +447,14 @@ class _CircleCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
-                      onPressed: _isLoading ? null : () => onJoinLeave!(isMember),
+                      onPressed:
+                          isLoading ? null : () => onJoinLeave!(isMember),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isMember ? Colors.red : AppTheme.primaryBlue,
+                        backgroundColor:
+                            isMember ? Colors.red : AppTheme.primaryBlue,
                       ),
-                      child: _isLoading 
-                          ? const CircularProgressIndicator(color: Colors.white) 
+                      child: isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
                           : Text(isMember ? 'Leave Circle' : 'Join Circle'),
                     ),
                   ],

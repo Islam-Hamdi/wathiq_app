@@ -129,8 +129,10 @@ class _LendScreenState extends State<LendScreen> {
                 }
 
                 loans.sort((a, b) {
-                  if (_sortBy == 'Newest') return b.requestedAt.compareTo(a.requestedAt);
-                  if (_sortBy == 'Oldest') return a.requestedAt.compareTo(b.requestedAt);
+                  if (_sortBy == 'Newest')
+                    return b.createdAt.compareTo(a.createdAt);
+                  if (_sortBy == 'Oldest')
+                    return a.createdAt.compareTo(b.createdAt);
                   if (_sortBy == 'Amount (High)') return b.amount.compareTo(a.amount);
                   if (_sortBy == 'Amount (Low)') return a.amount.compareTo(b.amount);
                   // Trust Score sorting would require fetching borrower's trust score
@@ -327,7 +329,7 @@ class _LoanRequestCard extends StatelessWidget {
                         ],
                       ),
                       Text(
-                        '@${loan.borrowerUsername} • ${_timeAgo(loan.requestedAt)}',
+                        '@${loan.borrowerUsername} • ${_timeAgo(loan.createdAt)}',
                         style: AppTheme.caption,
                       ),
                     ],
@@ -571,7 +573,7 @@ class _LoanDetailsSheet extends StatelessWidget {
                       style: AppTheme.title,
                     ),
                     Text(
-                      '@${loan.borrowerUsername} • ${_timeAgo(loan.requestedAt)}',
+                      '@${loan.borrowerUsername} • ${_timeAgo(loan.createdAt)}',
                       style: AppTheme.caption,
                     ),
                   ],
@@ -648,7 +650,7 @@ class _LoanDetailsSheet extends StatelessWidget {
             Column(
               children: loan.guarantorIds.map((guarantorId) {
                 return FutureBuilder<UserModel?>(
-                  future: UserService.instance.getUserOnce(guarantorId),
+                  future: UserService.instance.getUserById(guarantorId),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const LinearProgressIndicator();

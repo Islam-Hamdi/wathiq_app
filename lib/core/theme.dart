@@ -49,7 +49,7 @@ class AppTheme {
       ),
       
       // Card theme
-      cardTheme: const CardTheme(
+      cardTheme: const CardThemeData(
         color: AppTheme.cardColor,
         elevation: 1,
         shadowColor: Color(0x0D000000),
@@ -58,6 +58,7 @@ class AppTheme {
         ),
         margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
+
       
       // Input decoration theme
       inputDecorationTheme: InputDecorationTheme(

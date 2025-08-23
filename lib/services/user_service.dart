@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_model.dart';
 import 'firebase_service.dart';
+import 'package:rxdart/rxdart.dart';
+
 
 class UserService {
   static UserService? _instance;
@@ -122,6 +124,48 @@ class UserService {
       throw Exception('Failed to update trust score: $e');
     }
   }
+
+  Stream<Map<String, dynamic>> getUserStatsStream(String userId) {
+    final loansBorrowed =
+        _firestore.collection('loans').where('borrowerId', isEqualTo: userId);
+    final loansLent =
+        _firestore.collection('loans').where('lenderId', isEqualTo: userId);
+    final guarantorRequests = _firestore
+        .collection('guarantor_requests')
+        .where('guarantorId', isEqualTo: userId)
+        .where('status', isEqualTo: 'confirmed');
+
+    // Combine streams
+    return Rx.combineLatest3(
+      loansBorrowed.snapshots(),
+      loansLent.snapshots(),
+      guarantorRequests.snapshots(),
+      (QuerySnapshot borrowed, QuerySnapshot lent, QuerySnapshot guarantor) {
+        double totalBorrowed = 0.0;
+        double totalLent = 0.0;
+        int completedLoans = 0;
+
+        for (final doc in borrowed.docs) {
+          final data = doc.data() as Map<String, dynamic>;
+          totalBorrowed += (data['amount'] ?? 0.0).toDouble();
+          if (data['status'] == 'completed') completedLoans++;
+        }
+
+        for (final doc in lent.docs) {
+          final data = doc.data() as Map<String, dynamic>;
+          totalLent += (data['amount'] ?? 0.0).toDouble();
+        }
+
+        return {
+          'totalBorrowed': totalBorrowed,
+          'totalLent': totalLent,
+          'guaranteeCount': guarantor.docs.length,
+          'completedLoans': completedLoans,
+        };
+      },
+    );
+  }
+
 
   // Update KYC status
   Future<void> updateKycStatus(String userId, String status) async {

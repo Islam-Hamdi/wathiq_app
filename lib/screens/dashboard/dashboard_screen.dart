@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wathiq/models/guarantor_model.dart';
 import '../../core/theme.dart';
 import '../../widgets/stat_card.dart';
 import '../../services/auth_service.dart';
@@ -189,7 +190,8 @@ class _BorrowedTab extends StatelessWidget {
           itemBuilder: (context, index) {
             final loan = borrowedLoans[index];
             return FutureBuilder<UserModel?>(
-              future: userService.getUserOnce(loan.lenderId ?? ''), // Fetch lender info
+              future: userService
+                  .getUserById(loan.lenderId ?? ''), // Fetch lender info
               builder: (context, lenderSnapshot) {
                 final lenderUsername = lenderSnapshot.data?.username ?? 'N/A';
                 return _LoanCard(
@@ -203,7 +205,7 @@ class _BorrowedTab extends StatelessWidget {
                   reason: loan.reason,
                   guarantors: loan.guarantorIds,
                   isLender: false,
-                  timeAgo: _timeAgo(loan.requestedAt),
+                  timeAgo: _timeAgo(loan.createdAt),
                 );
               },
             );
@@ -258,7 +260,7 @@ class _LentTab extends StatelessWidget {
           itemBuilder: (context, index) {
             final loan = lentLoans[index];
             return FutureBuilder<UserModel?>(
-              future: userService.getUserOnce(loan.borrowerId),
+              future: userService.getUserById(loan.borrowerId),
               builder: (context, borrowerSnapshot) {
                 final borrowerUsername = borrowerSnapshot.data?.username ?? 'N/A';
                 return _LoanCard(
@@ -272,7 +274,7 @@ class _LentTab extends StatelessWidget {
                   reason: loan.reason,
                   guarantors: loan.guarantorIds,
                   isLender: true,
-                  timeAgo: _timeAgo(loan.requestedAt),
+                  timeAgo: _timeAgo(loan.createdAt),
                 );
               },
             );
@@ -303,7 +305,7 @@ class _GuarantorTab extends StatelessWidget {
     final loanService = LoanService();
     final userService = UserService.instance;
 
-    return StreamBuilder<List<GuarantorRequest>>(
+    return StreamBuilder<List<GuarantorRequestModel>>(
       stream: guarantorService.getUserGuarantorRequestsStream(userId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -338,7 +340,7 @@ class _GuarantorTab extends StatelessWidget {
                 }
                 final loan = loanSnapshot.data!;
                 return FutureBuilder<UserModel?>(
-                  future: userService.getUserOnce(loan.lenderId ?? ''),
+                  future: userService.getUserById(loan.lenderId ?? ''),
                   builder: (context, lenderSnapshot) {
                     final lenderUsername = lenderSnapshot.data?.username ?? 'N/A';
                     return _GuarantorCard(
@@ -348,7 +350,8 @@ class _GuarantorTab extends StatelessWidget {
                       amount: loan.amount,
                       currency: loan.currency,
                       status: loan.status,
-                      confirmedDate: _timeAgo(request.updatedAt ?? request.requestedAt),
+                      confirmedDate:
+                          _timeAgo(request.respondedAt ?? request.createdAt),
                       reason: loan.reason,
                     );
                   },
@@ -536,7 +539,7 @@ class _LoanCard extends StatelessWidget {
                 spacing: 6,
                 children: guarantors.map((guarantorId) {
                   return FutureBuilder<UserModel?>(
-                    future: UserService.instance.getUserOnce(guarantorId),
+                    future: UserService.instance.getUserById(guarantorId),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const SizedBox.shrink();
@@ -721,5 +724,45 @@ class _GuarantorCard extends StatelessWidget {
     );
   }
 }
+
+class _EmptyState extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  const _EmptyState({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 64, color: AppTheme.dividerColor),
+            const SizedBox(height: 16),
+            Text(
+              title,
+              style: AppTheme.title,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              subtitle,
+              style: AppTheme.caption,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 
 
