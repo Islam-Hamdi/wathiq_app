@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users can read and write their own user document
+    match /users/{userId} {
+      allow read, write: if request.auth != null 
+                         && request.auth.uid == userId;
+    }
+
+    // Loan documents - borrowers can create, all authenticated users can read
+    match /loans/{loanId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null 
+                    && request.auth.uid == resource.data.borrowerId;
+      allow update: if request.auth != null 
+                    && (request.auth.uid == resource.data.borrowerId 
+                        || request.auth.uid == resource.data.lenderId);
+    }
+
+    // Circles - members can read, owners can write
+    match /circles/{circleId} {
+      allow read: if request.auth != null 
+                  && (request.auth.uid == resource.data.ownerId 
+                      || request.auth.uid in resource.data.memberIds);
+      allow write: if request.auth != null 
+                   && request.auth.uid == resource.data.ownerId;
+    }
+
+    // Guarantor requests - involved parties can read/write
+    match /guarantor_requests/{requestId} {
+      allow read, write: if request.auth != null 
+                         && (request.auth.uid == resource.data.borrowerId 
+                             || request.auth.uid == resource.data.guarantorId);
+    }
+  }
+}

@@ -1,0 +1,63 @@
+name: wathiq
+description: Trust-based, interest-free lending app with Firestore integration
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.6 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Firebase & Firestore
+  firebase_core: ^2.24.2
+  cloud_firestore: ^4.13.6
+  firebase_auth: ^4.15.3
+  
+  # State Management
+  provider: ^6.1.1
+  
+  # UI & Navigation
+  go_router: ^12.1.3
+  flutter_localizations:
+    sdk: flutter
+  intl: 0.20.2
+  
+  # Utilities
+  shared_preferences: ^2.2.2
+  uuid: ^4.2.1
+  
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^2.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images/
+  
+  fonts:
+    - family: SFPro
+      fonts:
+        - asset: assets/fonts/SFPro-Regular.ttf
+        - asset: assets/fonts/SFPro-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/SFPro-Semibold.ttf
+          weight: 600
+        - asset: assets/fonts/SFPro-Bold.ttf
+          weight: 700
