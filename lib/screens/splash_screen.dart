@@ -77,7 +77,7 @@ class _SplashScreenState extends State<SplashScreen>
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(24),
                     child: Image.asset(
-                      'assets/images/wathiq_logo.png',
+                      'assets/images/wathiq_logo_white.png',
                       fit: BoxFit.contain,
                     ),
                   ),

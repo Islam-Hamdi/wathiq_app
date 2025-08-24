@@ -5,7 +5,6 @@ import '../../services/circle_service.dart';
 import '../../services/auth_service.dart';
 import '../../models/circle_model.dart';
 import '../../services/firebase_service.dart';
-import '../../services/user_service.dart';
 
 class CirclesScreen extends StatefulWidget {
   const CirclesScreen({super.key});

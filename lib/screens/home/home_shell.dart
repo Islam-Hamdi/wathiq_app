@@ -89,13 +89,12 @@ class _HomeShellState extends State<HomeShell> {
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: () => _onTap(2),
-        icon: const Icon(Icons.home),
-        label: const Text('Home'),
         backgroundColor: _currentIndex == 2 
             ? AppTheme.primaryBlue 
             : AppTheme.textSecondary,
+        child: const Icon(Icons.home), // only the icon
       ),
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
